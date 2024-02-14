@@ -72,6 +72,12 @@ lvim.plugins = {
   {
     "F4LCn/oxocharcoal.nvim",
     lazy = lvim.colorscheme ~= "oxocharcoal",
+  },
+  {
+    "ray-x/lsp_signature.nvim",
+    event = "VeryLazy",
+    opts = {},
+    config = function(_, opts) require 'lsp_signature'.setup(opts) end
   }
 }
 
@@ -160,15 +166,16 @@ lvim.builtin.which_key.mappings = {
   f = {
     name = "Find",
     t = { "<cmd>Telescope live_grep<cr>", "Text" },
-    f = { "<cmd>Telescope find_files<cr>", "Find File" },
+    F = { "<cmd>Telescope find_files<cr>", "Find File (All)" },
     l = { "<cmd>Telescope resume<cr>", "Resume last search" },
     m = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
-    g = {
+    f = {
       function()
         require("lvim.core.telescope.custom-finders").find_project_files { previewer = false }
       end,
-      "Git File",
+      "Find File (project)",
     },
+    g = {"<cmd>Telescope find_files<cr>", "Git Files"},
     r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
     h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
   },

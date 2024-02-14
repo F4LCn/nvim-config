@@ -70,16 +70,6 @@ lvim.plugins = {
     end
   },
   {
-    "brenoprata10/nvim-highlight-colors",
-    config = function()
-      require("nvim-highlight-colors").setup {
-        render = 'first_column',
-        enable_named_colors = true,
-        enable_tailwind = false,
-      }
-    end
-  },
-  {
     "F4LCn/oxocharcoal.nvim",
     lazy = lvim.colorscheme ~= "oxocharcoal",
   }

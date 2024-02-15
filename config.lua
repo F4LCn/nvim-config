@@ -175,7 +175,7 @@ lvim.builtin.which_key.mappings = {
       end,
       "Find File (project)",
     },
-    g = {"<cmd>Telescope find_files<cr>", "Git Files"},
+    g = { "<cmd>Telescope find_files<cr>", "Git Files" },
     r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
     h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
   },
@@ -192,6 +192,7 @@ lvim.builtin.which_key.mappings = {
     },
     d = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics" },
     D = { "<cmd>Telescope diagnostics<cr>", "Workspace diagnostics" },
+    l = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
   },
   g = {
     name = "Git",
@@ -273,3 +274,57 @@ lvim.keys.normal_mode["<F11>"] = "<cmd>lua require'dap'.step_into()<cr>"
 lvim.keys.normal_mode["<F12>"] = "<cmd>lua require'dap'.step_out()<cr>"
 
 lvim.keys.normal_mode["<Esc>"] = "<cmd> noh <CR>"
+
+-- debug adapters
+lvim.builtin.dap.active = true
+local dap = require("dap")
+dap.adapters = {}
+dap.configurations = {}
+
+dap.adapters.coreclr = {
+  type = 'executable',
+  command = '/usr/share/netcoredbg/netcoredbg',
+  args = { '--interpreter=vscode' }
+}
+dap.adapters.gdb = {
+  type = "executable",
+  command = "gdb",
+  args = { "-i", "dap" }
+}
+dap.adapters.codelldb = {
+  type = 'server',
+  host = '127.0.0.1',
+  port = 13000,
+  executable = {
+    -- CHANGE THIS to your path!
+    command = 'codelldb',
+    args = { "--port", "13000" },
+    detached = false,
+  }
+}
+
+dap.configurations.cs = {
+  {
+    type = "coreclr",
+    name = "launch - netcoredbg",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+    end,
+  },
+}
+dap.configurations.c = {
+  {
+    name = "Launch - codelldb",
+    type = "codelldb",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+  },
+}
+dap.configurations.cpp = dap.configurations.c
+dap.configurations.rust = dap.configurations.c
+dap.configurations["rs"] = dap.configurations.c
